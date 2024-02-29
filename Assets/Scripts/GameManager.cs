@@ -21,23 +21,30 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
+    [SerializeField, Range(3, 30)] int _maxNumAgents = 30;
+    [SerializeField, Range(3, 5)] int _initialNumAgents = 3;
     [SerializeField] Transform _plane;
     [SerializeField] Vector2Int _planeSize = new Vector2Int(10, 10);
 
     Vector2Int _planeSizeRange = new Vector2Int(10, 30);
+    int _numAgents = 0;
 
     private void Start()
     {
-
+        for (int i = 0; i < _initialNumAgents; i++)
+            SpawnAgent();
     }
 
     void Update()
     {
-        _spawnTimer -= Time.deltaTime;
-        if (_spawnTimer <= 0f)
+        if (_numAgents < _maxNumAgents)
         {
-            SpawnAgent();
-            _spawnTimer = Random.Range(_minSpawnFrequency, _maxSpawnFrequency);
+            _spawnTimer -= Time.deltaTime;
+            if (_spawnTimer <= 0f)
+            {
+                SpawnAgent();
+                _spawnTimer = Random.Range(_minSpawnFrequency, _maxSpawnFrequency);
+            }
         }
     }
 
@@ -72,7 +79,8 @@ public class GameManager : MonoBehaviour
             0f,
             Random.Range(verticalBounds.x, verticalBounds.y));
 
-        var newAgent = Instantiate(_agentPrefab, spawnPoint, Quaternion.identity);
+        Instantiate(_agentPrefab, spawnPoint, Quaternion.identity);
+        _numAgents++;
     }
 
     #endregion
