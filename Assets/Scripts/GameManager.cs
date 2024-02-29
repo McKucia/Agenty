@@ -101,7 +101,7 @@ public class GameManager : MonoBehaviour
     [SerializeField, Range(1, 5)] int _initialNumAgents = 1;
 
     int _numAgents = 0;
-    const int _minSpawnFrequency = 0;
+    const int _minSpawnFrequency = 1;
     const int _maxSpawnFrequency = 1;
     float _spawnTimer;
     Agent _currentAgentInfo;
@@ -113,27 +113,31 @@ public class GameManager : MonoBehaviour
 
     void HandleAgentClick()
     {
-        if (_currentAgentInfo.LifePoints != InfoPopup.GetSliderValue())
+        if (_currentAgentInfo)
             InfoPopup.SetHealth(_currentAgentInfo.LifePoints);
-
+        else
+            InfoPopup.SetActive(false);
+        
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = MainCamera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-
+        
             if (Physics.Raycast(ray, out hit)
                 && hit.transform.CompareTag(AgentTag))
             {
                 var agent = hit.transform.gameObject
                     .GetComponent<Agent>();
-
+        
                 InfoPopup.SetHealth(agent.LifePoints);
                 InfoPopup.SetName(agent.name);
-                InfoPopup.gameObject.SetActive(true);
+                InfoPopup.SetActive(true);
+                _currentAgentInfo = agent;
             }
             else
             {
-                InfoPopup.gameObject.SetActive(false);
+                InfoPopup.SetActive(false);
+                _currentAgentInfo = null;
             }
         }
     }

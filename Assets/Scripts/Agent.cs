@@ -35,6 +35,9 @@ public class Agent : MonoBehaviour
         {
             _lifePoints--;
             _agentMaterial.color = _triggerColor;
+
+            if (_lifePoints <= 0)
+                Destroy(gameObject);
         }
     }
 

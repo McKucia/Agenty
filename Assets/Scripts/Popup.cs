@@ -15,12 +15,16 @@ public class Popup : MonoBehaviour
 
     public void SetHealth(int health)
     {
-        _slider.value = health;
+        if (health != (int)_slider.value)
+            _slider.value = health;
     }
 
-    public int GetSliderValue()
+    public void SetActive(bool active)
     {
-        return (int)_slider.value;
+        if(active && gameObject.activeSelf) return;
+        if(!active && !gameObject.activeSelf) return;
+
+        gameObject.SetActive(active);
     }
 
     public void SetName(string name)
