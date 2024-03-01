@@ -79,6 +79,8 @@ public class GameManager : MonoBehaviour
         _planeVerticalBounds = new Vector2Int(
             (int)_plane.position.x - _planeSize.y / 2 + 1,
             (int)_plane.position.x + _planeSize.y / 2);
+        // 10 - 5, 30 - 10
+        MainCamera.orthographicSize = 3 / 4 * Mathf.Max(_planeSize.x, _planeSize.y) + 5 / 2;
     }
 
     #endregion
@@ -97,8 +99,8 @@ public class GameManager : MonoBehaviour
     public Popup InfoPopup;
 
     [SerializeField] GameObject _agentPrefab;
-    [SerializeField, Range(1, 30)] int _maxNumAgents = 30;
-    [SerializeField, Range(1, 5)] int _initialNumAgents = 1;
+    [SerializeField, Range(3, 30)] int _maxNumAgents = 30;
+    [SerializeField, Range(3, 5)] int _initialNumAgents = 3;
 
     int _numAgents = 0;
     const int _minSpawnFrequency = 1;
@@ -109,6 +111,11 @@ public class GameManager : MonoBehaviour
     public string GetRandomName()
     {
         return Names[Random.Range(0, Names.Count)];
+    }
+
+    public void DecrementNumAgents()
+    {
+        _numAgents--;
     }
 
     void HandleAgentClick()

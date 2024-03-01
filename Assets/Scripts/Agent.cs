@@ -51,7 +51,10 @@ public class Agent : MonoBehaviour
             _lifePoints--;
 
             if (_lifePoints <= 0)
+            {
                 Destroy(gameObject);
+                GameManager.Instance.DecrementNumAgents();
+            }
         }
     }
 
