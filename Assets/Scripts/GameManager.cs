@@ -120,6 +120,10 @@ public class GameManager : MonoBehaviour
         
         if (Input.GetMouseButtonDown(0))
         {
+            // user clicked UI
+            bool isOverUI = UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
+            if (isOverUI) return;
+
             Ray ray = MainCamera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
         

@@ -65,6 +65,7 @@ public class Agent : MonoBehaviour
 
     void UpdateColor()
     {
+        // check if color is not already set, to optimize
         if (_isColliding && _agentMaterial.color != _triggerColor)
             _agentMaterial.color = _triggerColor;
         else if (!_isColliding && _agentMaterial.color != _defaultColor)
