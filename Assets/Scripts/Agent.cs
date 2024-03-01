@@ -7,18 +7,25 @@ public class Agent : MonoBehaviour
     [SerializeField] float _speed = 1f;
     [SerializeField] Color _defaultColor;
     [SerializeField] Color _triggerColor;
+    [SerializeField] Outline _outline;
 
     [HideInInspector] public int LifePoints { get { return _lifePoints; } }
 
     Vector2 _target;
     Material _agentMaterial;
-    bool _targetSet = false;
     int _lifePoints = 3;
+    bool _targetSet = false;
+    bool _isColliding = false;
 
     void Start()
     {
         name = GameManager.Instance.GetRandomName();
         _agentMaterial = GetComponent<Renderer>().material;
+    }
+
+    public void SetOutline(bool active)
+    {
+        _outline.enabled = active;
     }
 
     void Update()
@@ -27,6 +34,14 @@ public class Agent : MonoBehaviour
             SetTarget();
             StartCoroutine(MoveToTarget());
         }
+
+        UpdateColor();
+    }
+
+    // before OnTriggerStay
+    void FixedUpdate()
+    {
+        _isColliding = false;
     }
 
     void OnTriggerEnter(Collider collider)
@@ -34,16 +49,26 @@ public class Agent : MonoBehaviour
         if (collider.gameObject.CompareTag(GameManager.Instance.AgentTag))
         {
             _lifePoints--;
-            _agentMaterial.color = _triggerColor;
 
             if (_lifePoints <= 0)
                 Destroy(gameObject);
         }
     }
 
-    void OnTriggerExit(Collider collider)
+    // change color if object is colliding
+    void OnTriggerStay(Collider collider)
     {
-        _agentMaterial.color = _defaultColor;
+        if (collider.gameObject.CompareTag(GameManager.Instance.AgentTag))
+            _isColliding = true;
+    }
+    // note - cannot use onTriggerExit cause another object can be destroyed, in that case onTriggerExit would not work properly
+
+    void UpdateColor()
+    {
+        if (_isColliding && _agentMaterial.color != _triggerColor)
+            _agentMaterial.color = _triggerColor;
+        else if (!_isColliding && _agentMaterial.color != _defaultColor)
+            _agentMaterial.color = _defaultColor;
     }
 
     void SetTarget()

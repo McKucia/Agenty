@@ -128,14 +128,20 @@ public class GameManager : MonoBehaviour
             {
                 var agent = hit.transform.gameObject
                     .GetComponent<Agent>();
-        
+
+                if(_currentAgentInfo) 
+                    _currentAgentInfo.SetOutline(false);
+
                 InfoPopup.SetHealth(agent.LifePoints);
                 InfoPopup.SetName(agent.name);
                 InfoPopup.SetActive(true);
+                agent.SetOutline(true);
                 _currentAgentInfo = agent;
             }
             else
             {
+                if (_currentAgentInfo)
+                    _currentAgentInfo.SetOutline(false);
                 InfoPopup.SetActive(false);
                 _currentAgentInfo = null;
             }
