@@ -87,8 +87,8 @@ public class GameManager : MonoBehaviour
     void UpdateCameraPosition()
     {
         // change camera position to change the camera's visibility range
-        // this equation will return 5 for plane size = 10, and 10 for plane size = 30
-        MainCamera.orthographicSize = 0.25f * Mathf.Max((float)_planeSize.x, (float)_planeSize.y) + 2.5f;
+        // this equation will return 6 for plane size = 10, and 14 for plane size = 30
+        MainCamera.orthographicSize = 2f / 5f * Mathf.Max((float)_planeSize.x, (float)_planeSize.y) + 2f;
     }
 
     #endregion

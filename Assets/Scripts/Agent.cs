@@ -7,19 +7,23 @@ public class Agent : MonoBehaviour
     [SerializeField] Color _defaultColor;
     [SerializeField] Color _triggerColor;
     [SerializeField] Outline _outline;
+    [SerializeField] Transform _model;
 
     [HideInInspector] public int LifePoints { get { return _lifePoints; } }
 
     Vector2 _target;
     Material _agentMaterial;
     int _lifePoints = 3;
+    float _rotationSpeed = 10f;
     bool _targetSet = false;
     bool _isColliding = false;
 
     void Start()
     {
         name = GameManager.Instance.GetRandomName();
-        _agentMaterial = GetComponent<Renderer>().material;
+        _agentMaterial = _model
+            .GetChild(0)
+            .GetComponent<Renderer>().material;
     }
 
     public void SetOutline(bool active)
@@ -88,10 +92,17 @@ public class Agent : MonoBehaviour
         var targetPosition = new Vector3(_target.x, transform.position.y, _target.y);
         
         Vector3 direction = (targetPosition - transform.position).normalized;
-        
+        Quaternion targetRotation = Quaternion.identity;
+
         while (Vector3.Distance(transform.position, targetPosition) > .1)
         {
             transform.position += direction * Time.fixedDeltaTime * _speed;
+
+            Vector3 targetDirection = targetPosition - _model.position;
+            targetRotation = Quaternion.LookRotation(targetDirection);
+            Quaternion nextRotation = Quaternion.Lerp(_model.localRotation, targetRotation, Time.fixedDeltaTime * _rotationSpeed);
+            _model.localRotation = nextRotation;
+
             yield return new WaitForFixedUpdate();
         }
         _targetSet = false;
