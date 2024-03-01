@@ -1,5 +1,4 @@
-﻿using JetBrains.Annotations;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -23,7 +22,7 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
-    public Camera MainCamera;
+    [SerializeField] Camera MainCamera;
 
     private void Start()
     {
@@ -33,6 +32,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        // spawn every "spawnTimer" seconds
         if (_numAgents < _maxNumAgents)
         {
             _spawnTimer -= Time.deltaTime;
@@ -66,6 +66,7 @@ public class GameManager : MonoBehaviour
 
     void UpdatePlaneSize()
     {
+        // range
         _planeSize.x = Mathf.Clamp(_planeSize.x, _planeSizeRange.x, _planeSizeRange.y);
         _planeSize.y = Mathf.Clamp(_planeSize.y, _planeSizeRange.x, _planeSizeRange.y);
 
@@ -79,8 +80,15 @@ public class GameManager : MonoBehaviour
         _planeVerticalBounds = new Vector2Int(
             (int)_plane.position.x - _planeSize.y / 2 + 1,
             (int)_plane.position.x + _planeSize.y / 2);
-        // 10 - 5, 30 - 10
-        MainCamera.orthographicSize = 3 / 4 * Mathf.Max(_planeSize.x, _planeSize.y) + 5 / 2;
+
+        UpdateCameraPosition();
+    }
+
+    void UpdateCameraPosition()
+    {
+        // change camera position to change the camera's visibility range
+        // this equation will return 5 for plane size = 10, and 10 for plane size = 30
+        MainCamera.orthographicSize = 0.25f * Mathf.Max((float)_planeSize.x, (float)_planeSize.y) + 2.5f;
     }
 
     #endregion
@@ -95,12 +103,21 @@ public class GameManager : MonoBehaviour
         "Zdzisław", "Walentyna", "Mieczysław", "Bogusława", "Anatol",
         "Jadzia", "Bogdan", "Wanda"
     };
-    public string AgentTag = "Agent";
+    public readonly string AgentTag = "Agent";
     public Popup InfoPopup;
 
     [SerializeField] GameObject _agentPrefab;
     [SerializeField, Range(3, 30)] int _maxNumAgents = 30;
     [SerializeField, Range(3, 5)] int _initialNumAgents = 3;
+
+    [HideInInspector] public int NumAgents
+    {
+        get { return _numAgents; }
+        set
+        {
+            _numAgents = value < 0 ? 0 : value; // prevent setting less than 0
+        }
+    }
 
     int _numAgents = 0;
     const int _minSpawnFrequency = 1;
@@ -111,11 +128,6 @@ public class GameManager : MonoBehaviour
     public string GetRandomName()
     {
         return Names[Random.Range(0, Names.Count)];
-    }
-
-    public void DecrementNumAgents()
-    {
-        _numAgents--;
     }
 
     void HandleAgentClick()
@@ -134,6 +146,7 @@ public class GameManager : MonoBehaviour
             Ray ray = MainCamera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
         
+            // user clicked Agent
             if (Physics.Raycast(ray, out hit)
                 && hit.transform.CompareTag(AgentTag))
             {
@@ -146,13 +159,17 @@ public class GameManager : MonoBehaviour
                 InfoPopup.SetHealth(agent.LifePoints);
                 InfoPopup.SetName(agent.name);
                 InfoPopup.SetActive(true);
+
                 agent.SetOutline(true);
+
                 _currentAgentInfo = agent;
             }
+            // deselect agent, just click somewhere else
             else
             {
                 if (_currentAgentInfo)
                     _currentAgentInfo.SetOutline(false);
+
                 InfoPopup.SetActive(false);
                 _currentAgentInfo = null;
             }

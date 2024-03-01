@@ -122,7 +122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2e240686bafb8448a563beedd96a669, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 1
+  _speed: 3
   _defaultColor: {r: 0.43747774, g: 0.56674147, b: 0.8207547, a: 0}
   _triggerColor: {r: 0.9716981, g: 0.55460125, b: 0.55460125, a: 0}
   _outline: {fileID: -4464918786145238236}

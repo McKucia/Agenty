@@ -1388,8 +1388,8 @@ MonoBehaviour:
   AgentTag: Agent
   InfoPopup: {fileID: 553644718}
   _agentPrefab: {fileID: 4145917881232460153, guid: 11638b209996a1b48915b8697636a17c, type: 3}
-  _maxNumAgents: 1
-  _initialNumAgents: 2
+  _maxNumAgents: 30
+  _initialNumAgents: 5
 --- !u!4 &953921784
 Transform:
   m_ObjectHideFlags: 0

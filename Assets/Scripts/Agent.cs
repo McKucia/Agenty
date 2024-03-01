@@ -1,10 +1,9 @@
 using System.Collections;
-using TMPro;
 using UnityEngine;
 
 public class Agent : MonoBehaviour
 {
-    [SerializeField] float _speed = 1f;
+    [SerializeField] float _speed = 3f;
     [SerializeField] Color _defaultColor;
     [SerializeField] Color _triggerColor;
     [SerializeField] Outline _outline;
@@ -53,7 +52,7 @@ public class Agent : MonoBehaviour
             if (_lifePoints <= 0)
             {
                 Destroy(gameObject);
-                GameManager.Instance.DecrementNumAgents();
+                GameManager.Instance.NumAgents--;
             }
         }
     }
